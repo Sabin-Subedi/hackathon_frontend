@@ -8,7 +8,7 @@ import { useSelector } from "react-redux";
 import { getIsLoggedIn, getUser } from "../redux/reducers/userSlice";
 import { BsCaretDownFill } from "react-icons/bs";
 import { UserOutlined } from "@ant-design/icons";
-import { signOutUser } from "../firebase/auth";
+import { signOutUser } from "../hooks/auth";
 
 const menu = (
   <div className="bg-white shadow rounded overflow-hidden mt-5">

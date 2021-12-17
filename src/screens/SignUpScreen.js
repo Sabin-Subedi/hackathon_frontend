@@ -11,11 +11,7 @@ import {
   Divider,
 } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
-import {
-  FbAuthUser,
-  GoogleAuthUser,
-  SignUpWithEmailAndPassword,
-} from "../firebase/auth";
+
 import { Content } from "antd/lib/layout/layout";
 import Logo from "../vectors/Logo";
 import { FcGoogle } from "react-icons/fc";
@@ -23,14 +19,15 @@ import { GrFacebook } from "react-icons/gr";
 import { Link, useNavigate, useNavigationType } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { getIsLoggedIn, getUser } from "../redux/reducers/userSlice";
+import useRegister from "../hooks/auth/useRegister";
 
 function SignUpScreen() {
   const navigate = useNavigate();
   const isLoggedIn = useSelector(getIsLoggedIn);
+  const { register, loading } = useRegister();
 
   const onFinish = (values) => {
-    SignUpWithEmailAndPassword(values.email, values.password);
-    console.log("Received values of form: ", values);
+    register(values.email, values.password, values.fullname);
   };
 
   useEffect(() => {
@@ -38,6 +35,8 @@ function SignUpScreen() {
       navigate("/");
     }
   }, [isLoggedIn, navigate]);
+
+  console.log(loading);
 
   return (
     <Layout>
@@ -73,18 +72,6 @@ function SignUpScreen() {
                   size="large"
                 >
                   <Form.Item
-                    name="fullname"
-                    rules={[
-                      {
-                        required: true,
-                        message: "Please input your full name!",
-                      },
-                    ]}
-                    size="large"
-                  >
-                    <Input placeholder="Enter your fullName" />
-                  </Form.Item>
-                  <Form.Item
                     name="email"
                     rules={[
                       {
@@ -115,11 +102,6 @@ function SignUpScreen() {
                   >
                     <Input type="password" placeholder="Enter your password" />
                   </Form.Item>
-                  <Form.Item>
-                    <Form.Item name="remember" valuePropName="checked" noStyle>
-                      <Checkbox>Remember me</Checkbox>
-                    </Form.Item>
-                  </Form.Item>
 
                   <Form.Item>
                     <Button
@@ -127,35 +109,14 @@ function SignUpScreen() {
                       size="large"
                       htmlType="submit"
                       className="login-form-button"
+                      loading={loading}
                       block
                     >
-                      Create an account
+                      {loading ? "Signing up..." : "Create an account"}
                     </Button>
                   </Form.Item>
                 </Form>
                 <p className="text-gray-400 text-center">Or</p>
-
-                <div
-                  onClick={GoogleAuthUser}
-                  className="bg-white shadow py-3 px-5 flex items-center justify-center cursor-pointer hover:bg-gray-50"
-                >
-                  <FcGoogle className="text-xl mr-4" />
-                  <h4 className="mb-0 font-bold text-gray-500 ">
-                    Continue with Google
-                  </h4>
-                </div>
-                <div
-                  onClick={FbAuthUser}
-                  className="bg-white shadow py-3 px-5 flex items-center justify-center cursor-pointer hover:bg-gray-50 mt-3"
-                >
-                  <div>
-                    <GrFacebook className="text-xl mr-4 text-blue-600" />
-                  </div>
-                  <h4 className="mb-0 font-bold text-gray-500 ">
-                    Continue with Facebook
-                  </h4>
-                </div>
-                <Divider />
 
                 <Link to="/login">
                   <p className="text-center text-blue-600 hover:underline hover:text-indigo-800">

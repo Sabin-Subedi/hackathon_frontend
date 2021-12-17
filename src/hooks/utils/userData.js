@@ -6,5 +6,6 @@ export const retrieveUserData = (user) => {
     phoneNumber: user.phoneNumber,
     email: user.email,
     emailVerified: user.emailVerified,
+    id: user.uid,
   };
 };

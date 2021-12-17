@@ -9,14 +9,9 @@ import {
   Row,
   Typography,
   Divider,
+  Spin,
 } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
-import {
-  FbAuthUser,
-  GoogleAuthUser,
-  signInEmailAndPassword,
-  SignUpWithEmailAndPassword,
-} from "../firebase/auth";
 import { Content } from "antd/lib/layout/layout";
 import Logo from "../vectors/Logo";
 import { FcGoogle } from "react-icons/fc";
@@ -24,14 +19,15 @@ import { GrFacebook } from "react-icons/gr";
 import { Link, useNavigate, useNavigationType } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { getIsLoggedIn, getUser } from "../redux/reducers/userSlice";
+import useLogin from "../hooks/auth/useLogin";
 
 function SignInScreen() {
   const navigate = useNavigate();
   const isLoggedIn = useSelector(getIsLoggedIn);
+  const { login, loading, error } = useLogin();
 
   const onFinish = (values) => {
-    signInEmailAndPassword(values.email, values.password);
-    console.log("Received values of form: ", values);
+    login(values.email, values.password);
   };
 
   useEffect(() => {
@@ -104,11 +100,6 @@ function SignInScreen() {
                   >
                     <Input type="password" placeholder="Enter your password" />
                   </Form.Item>
-                  <Form.Item>
-                    <Form.Item name="remember" valuePropName="checked" noStyle>
-                      <Checkbox>Remember me</Checkbox>
-                    </Form.Item>
-                  </Form.Item>
 
                   <Form.Item>
                     <Button
@@ -116,41 +107,21 @@ function SignInScreen() {
                       size="large"
                       htmlType="submit"
                       className="login-form-button"
+                      loading={loading}
                       block
                     >
-                      Login
+                      {loading ? "Logging in " : "Log in"}
                     </Button>
                   </Form.Item>
                 </Form>
-                <p className="text-gray-400 text-center">Or</p>
-
-                <div
-                  onClick={GoogleAuthUser}
-                  className="bg-white shadow py-3 px-5 flex items-center justify-center cursor-pointer hover:bg-gray-50"
-                >
-                  <FcGoogle className="text-xl mr-4" />
-                  <h4 className="mb-0 font-bold text-gray-500 ">
-                    Continue with Google
-                  </h4>
+                <div className='flex justify-center'>
+                  <p className="text-center mr-3">Don't have an account?</p>
+                  <Link to="/signup">
+                    <p className="text-center text-blue-600 hover:underline hover:text-indigo-800">
+                      Sign up for an account
+                    </p>
+                  </Link>
                 </div>
-                <div
-                  onClick={FbAuthUser}
-                  className="bg-white shadow py-3 px-5 flex items-center justify-center cursor-pointer hover:bg-gray-50 mt-3"
-                >
-                  <div>
-                    <GrFacebook className="text-xl mr-4 text-blue-600" />
-                  </div>
-                  <h4 className="mb-0 font-bold text-gray-500 ">
-                    Continue with Facebook
-                  </h4>
-                </div>
-                <Divider />
-
-                <Link to="/signup">
-                  <p className="text-center text-blue-600 hover:underline hover:text-indigo-800">
-                    Sign up for an account
-                  </p>
-                </Link>
               </div>
             </Col>
           </Row>

@@ -1,0 +1,1 @@
+export const APIEndpoint = 'http://localhost:4000';
